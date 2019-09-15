@@ -12,6 +12,10 @@ class ProdutoController {
         res.json(produtos);
         return next();
     }
+    
+    listByCategoryOrName(req, res, next) {
+        //
+    }
 }
 
 module.exports = ProdutoController;
