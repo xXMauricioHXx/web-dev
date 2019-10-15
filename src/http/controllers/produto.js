@@ -1,10 +1,10 @@
-const Produto = require('../models/ProdutoModel');
+const { ResourceNotFoundError } = require('../../errors');
+const produtoModel = require('../../models/produto');
 
 class ProdutoController {
-
   async list(req, res, next) {
     try {
-      const produtos = await Produto.find();
+      const produtos = await produtoModel.find();
       res.json(produtos);
       return next();
     } catch (err) {
@@ -15,18 +15,18 @@ class ProdutoController {
   async listById(req, res, next) {
     try {
       const { id } = req.params;
-      const produto = await Produto.findById(id);
+      const produto = await produtoModel.findById(id);
 
       if (!produto) {
-        throw new Error('Product not found');
+        throw new ResourceNotFoundError();
       }
+
       res.json(produto);
       return next();
     } catch (err) {
       return next(err);
     }
   }
-
 }
 
 module.exports = ProdutoController;

@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"prettier.arrowParens": "avoid",
+		"prettier.trailingComma": "es5",
+		"prettier.endOfLine": "auto",
+		"prettier.singleQuote": true,
+		"editor.formatOnSave": true,
+		"editor.tabSize": 2
+	}
+}
