@@ -7,8 +7,8 @@ class CodedError extends Error {
   toJSON() {
     return {
       message: this.message,
-      code: this.code
-    }
+      code: this.code,
+    };
   }
 }
 
@@ -18,7 +18,6 @@ class ResourceNotFoundError extends CodedError {
   }
 }
 
-
 module.exports = {
-  ResourceNotFoundError
-}
+  ResourceNotFoundError,
+};

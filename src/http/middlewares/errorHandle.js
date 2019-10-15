@@ -1,25 +1,25 @@
 const logger = require('../../logger');
 const { ResourceNotFoundError } = require('../../errors');
 
-module.exports = (err, req, res, next) => {  
+module.exports = (err, req, res, next) => {
   logger.error('Handling http error', {
     error: {
       message: err.message,
-      code: err.code
+      code: err.code,
     },
     method: req.method,
-    path: req.path,    
+    path: req.path,
   });
 
   if (err instanceof ResourceNotFoundError) {
     res.status(404).send(err);
-    return next();   
+    return next();
   }
 
   res.status(500).send({
     code: 'UNEXPECTED_ERROR',
-    message: 'Internal server failure'
+    message: 'Internal server failure',
   });
 
   return next();
-}
+};

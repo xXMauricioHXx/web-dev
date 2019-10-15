@@ -1,31 +1,29 @@
-const ProdutoModel = require('../../models/produto');
 const { ResourceNotFoundError } = require('../../errors');
-const produtoModel = new ProdutoModel();
+const produtoModel = require('../../models/produto');
 
 class ProdutoController {
-  async find(req, res, next) {
+  async list(req, res, next) {
     try {
       const produtos = await produtoModel.find();
       res.json(produtos);
       return next();
-    } catch(err) {
+    } catch (err) {
       return next(err);
     }
   }
 
-  async findById(req, res, next) {
+  async listById(req, res, next) {
     try {
-      
-      const id = req.params.id;
+      const { id } = req.params;
       const produto = await produtoModel.findById(id);
-      
-      if(!produto) {
+
+      if (!produto) {
         throw new ResourceNotFoundError();
       }
-      
-      res.send(produto);
+
+      res.json(produto);
       return next();
-    }catch(err) {
+    } catch (err) {
       return next(err);
     }
   }

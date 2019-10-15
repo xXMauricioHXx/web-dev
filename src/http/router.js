@@ -3,7 +3,7 @@ const ProdutoController = require('./controllers/produto');
 
 const produtoController = new ProdutoController();
 
-router.get('/produtos', produtoController.find);
-router.get('/produtos/:id', produtoController.findById);
+router.get('/produtos', produtoController.list);
+router.get('/produtos/:id', produtoController.listById);
 
 module.exports = router;

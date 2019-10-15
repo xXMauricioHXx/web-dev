@@ -1,29 +1,23 @@
-const produtos = [
-  {
-    _id: "1",
-    name: "Batom",
-    price: "R$ 125,00"
-  },
-  {
-    _id: "2",
-    name: "Batom",
-    price: "R$ 125,00"
-  },
-  {
-    _id: "3",
-    name: "Batom",
-    price: "R$ 125,00"
-  }
-];
+const mongoose = require('mongoose');
 
-class ProdutoModel {
-  find() {
-    return Promise.resolve(produtos);
-  }
+const ProdutoSchema = new mongoose.Schema({
+  name: String,
+  companies: [
+    {
+      itemId: String,
+      price: String,
+      oldPrice: String,
+      description: String,
+      installments: String,
+      installmentsPrice: String,
+      brand: String,
+      image: String,
+      siteImage: String,
+      siteLink: String,
+      shippingPrice: String,
+      priceWithShipping: String,
+    },
+  ],
+});
 
-  findById(id) {
-    return Promise.resolve(produtos.find((produto) => produto._id === id));
-  }
-}
-
-module.exports = ProdutoModel;
+module.exports = mongoose.model('product', ProdutoSchema);
