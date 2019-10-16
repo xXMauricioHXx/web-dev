@@ -1,8 +1,11 @@
 const logger = require('../../logger');
-const { ResourceNotFoundError, NotFoundError } = require('../../errors');
+const {
+  ResourceNotFoundError,
+  NotFoundError,
+  UnauthorizedError,
+} = require('../../errors');
 
 module.exports = (err, req, res, next) => {
-  console.log(err);
   logger.error('Handling http error', {
     error: {
       message: err.message,
@@ -14,6 +17,11 @@ module.exports = (err, req, res, next) => {
 
   if (err instanceof ResourceNotFoundError || err instanceof NotFoundError) {
     res.status(404).send(err);
+    return next();
+  }
+
+  if (err instanceof UnauthorizedError) {
+    res.status(401).send(err);
     return next();
   }
 

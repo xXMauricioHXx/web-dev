@@ -29,9 +29,6 @@ class Application {
       app.use(bodyParser.json());
 
       app.use(router);
-      app.use('*', (req, res, next) => {
-        next(new NotFoundError());
-      });
       app.use(errorHandle);
 
       app.listen(this.config.port, () => {

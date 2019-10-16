@@ -10,4 +10,5 @@ router.get('/produtos/:id', produtoController.listById);
 
 router.post('/usuarios', usuarioController.createUser);
 router.get('/usuarios/:id', usuarioController.findUserById);
+
 module.exports = router;
