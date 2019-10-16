@@ -12,6 +12,12 @@ class CodedError extends Error {
   }
 }
 
+class NotFoundError extends CodedError {
+  constructor() {
+    super('NOT_FOUND', 'Page not found');
+  }
+}
+
 class ResourceNotFoundError extends CodedError {
   constructor() {
     super('RESOURCE_NOT_FOUND', 'Resource not found');
@@ -20,4 +26,5 @@ class ResourceNotFoundError extends CodedError {
 
 module.exports = {
   ResourceNotFoundError,
+  NotFoundError,
 };

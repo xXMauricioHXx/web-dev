@@ -1,7 +1,8 @@
 const logger = require('../../logger');
-const { ResourceNotFoundError } = require('../../errors');
+const { ResourceNotFoundError, NotFoundError } = require('../../errors');
 
 module.exports = (err, req, res, next) => {
+  console.log(err);
   logger.error('Handling http error', {
     error: {
       message: err.message,
@@ -11,7 +12,7 @@ module.exports = (err, req, res, next) => {
     path: req.path,
   });
 
-  if (err instanceof ResourceNotFoundError) {
+  if (err instanceof ResourceNotFoundError || err instanceof NotFoundError) {
     res.status(404).send(err);
     return next();
   }
