@@ -24,7 +24,17 @@ class ResourceNotFoundError extends CodedError {
   }
 }
 
+class UnauthorizedError extends CodedError {
+  constructor() {
+    super(
+      'INVALID_CREDENTIALS',
+      'Invalid credentials or not sufficient permission'
+    );
+  }
+}
+
 module.exports = {
+  UnauthorizedError,
   ResourceNotFoundError,
   NotFoundError,
 };
