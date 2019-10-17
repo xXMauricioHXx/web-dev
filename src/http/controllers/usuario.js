@@ -4,13 +4,6 @@ const { ResourceNotFoundError, UnauthorizedError } = require('../../errors');
 const usuarioModel = require('../../models/usuario');
 
 class UsuarioController {
-  constructor() {
-    this.config = {
-      saltRounds: process.env.SALT_ROUNDS || 10,
-      tokenHash: process.env.TOKEN_HASH || '',
-      expiresIn: process.env.TOKEN_EXPIRES_IN || '',
-    };
-  }
   async listFavorites(req, res, next) {
     const { user_id } = req.headers;
 
@@ -27,7 +20,10 @@ class UsuarioController {
   async createUser(req, res, next) {
     try {
       let user = req.body;
-      user.password = await bcrypt.hash(user.password, this.config.saltRounds);
+      user.password = await bcrypt.hash(
+        user.password,
+        parseInt(process.env.SALT_ROUNDS, 10)
+      );
 
       user = await usuarioModel.create(user);
       res.json(user);
@@ -72,8 +68,8 @@ class UsuarioController {
 
       const token = jwt.sign(
         { name: user.name, email, id: user._id },
-        this.config.tokenHash,
-        { expiresIn: this.config.expiresIn }
+        process.env.TOKEN_HASH,
+        { expiresIn: process.env.TOKEN_EXPIRES_IN }
       );
 
       res.json({ token });
