@@ -17,6 +17,8 @@ class UsuarioController {
     return res.json(favorites);
   }
 
+  async favorite(req, res, next) {}
+
   async createUser(req, res, next) {
     try {
       let user = req.body;

@@ -9,6 +9,7 @@ const errorHandle = require('./http/middlewares/errorHandle');
 
 class Application {
   constructor(config) {
+    console.log(config);
     this.config = config;
   }
 
