@@ -36,9 +36,9 @@ class UsuarioController {
   async findUserById(req, res, next) {
     try {
       const id = req.params.id;
-      console.log(`id: ${id}`);
+      
       const user = await usuarioModel.findOne({ _id: id });
-      console.log(`user: ${user}`);
+      
       if (!user) {
         throw new ResourceNotFoundError();
       }
