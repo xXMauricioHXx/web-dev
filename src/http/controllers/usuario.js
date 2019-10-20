@@ -68,7 +68,7 @@ class UsuarioController {
 
       const token = jwt.sign(
         { name: user.name, email, id: user._id },
-        process.env.TOKEN_HASH,
+        process.env.TOKEN_SECRET,
         { expiresIn: process.env.TOKEN_EXPIRES_IN }
       );
 
