@@ -17,9 +17,11 @@ class ProdutoController {
       const nameOrCategory = req.query.q;
       console.log(nameOrCategory);
       const products = await produtoModel.find({
-        $or: [{ name: nameOrCategory }, { category: nameOrCategory }],
+        $or: [
+          { name: { $regex: nameOrCategory, $options: 'i' } },
+          { category: { $regex: nameOrCategory, $options: 'i' } },
+        ],
       });
-
       res.json(products);
       return next();
     } catch (err) {

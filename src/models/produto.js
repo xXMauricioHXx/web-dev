@@ -18,6 +18,6 @@ const ProdutoSchema = new mongoose.Schema({
       priceWithShipping: String,
     },
   ],
-});
+}, { collection: 'product' });
 
 module.exports = mongoose.model('product', ProdutoSchema);

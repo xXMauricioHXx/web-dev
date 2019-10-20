@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 const { NotFoundError } = require('./errors');
 const router = require('./http/router');
@@ -9,7 +10,6 @@ const errorHandle = require('./http/middlewares/errorHandle');
 
 class Application {
   constructor(config) {
-    console.log(config);
     this.config = config;
   }
 
@@ -28,7 +28,7 @@ class Application {
     db.on('connected', () => {
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(bodyParser.json());
-
+      app.use(cors());
       app.use(router);
       app.use(errorHandle);
 

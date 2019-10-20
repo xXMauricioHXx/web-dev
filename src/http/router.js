@@ -6,7 +6,7 @@ const UsuarioController = require('./controllers/usuario');
 const produtoController = new ProdutoController();
 const usuarioController = new UsuarioController();
 
-router.get('/produtos', produtoController.list);
+router.get('/produtos', produtoController.listByIdOrCategory);
 router.get('/produtos/:id', produtoController.listById);
 
 router.post('/usuarios', usuarioController.createUser);
@@ -14,8 +14,8 @@ router.get('/usuarios/:id', usuarioController.findUserById);
 
 router.post('/login', usuarioController.auth);
 
-router.use('*', (req, res, next) => {
-  next(new NotFoundError());
-});
+// router.use('*', (req, res, next) => {
+//   next(new NotFoundError());
+// });
 
 module.exports = router;
