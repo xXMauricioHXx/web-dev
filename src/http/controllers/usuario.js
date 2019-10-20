@@ -36,9 +36,9 @@ class UsuarioController {
   async findUserById(req, res, next) {
     try {
       const id = req.params.id;
-
-      const user = await usuarioModel.findOne({ id });
-
+      console.log(`id: ${id}`);
+      const user = await usuarioModel.findOne({ _id: id });
+      console.log(`user: ${user}`);
       if (!user) {
         throw new ResourceNotFoundError();
       }
@@ -68,7 +68,7 @@ class UsuarioController {
 
       const token = jwt.sign(
         { name: user.name, email, id: user._id },
-        process.env.TOKEN_SECRET,
+        process.env.TOKEN_HASH,
         { expiresIn: process.env.TOKEN_EXPIRES_IN }
       );
 
