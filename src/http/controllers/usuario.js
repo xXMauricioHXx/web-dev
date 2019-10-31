@@ -5,16 +5,21 @@ const usuarioModel = require('../../models/usuario');
 
 class UsuarioController {
   async listFavorites(req, res, next) {
-    const { user_id } = req.headers;
+    try {
+      const { user_id } = req.headers;
 
-    const favorites = await usuarioModel.favorites;
+      const user = await usuarioModel.findOne({ _id: user_id });
 
-    if (!favorites) {
-      return res.status(404).json({ error: 'Favorite product not found' });
-      //throw new Error('Product not found');
+      if (!user) {
+        throw new ResourceNotFoundError();
+      }
+
+      const favorites = user.favoriteProducts;
+      res.json(favorites);
+      return next();
+    } catch (err) {
+      return next(err);
     }
-
-    return res.json(favorites);
   }
 
   async createUser(req, res, next) {
@@ -36,9 +41,9 @@ class UsuarioController {
   async findUserById(req, res, next) {
     try {
       const id = req.params.id;
-      
+
       const user = await usuarioModel.findOne({ _id: id });
-      
+
       if (!user) {
         throw new ResourceNotFoundError();
       }

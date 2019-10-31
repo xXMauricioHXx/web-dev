@@ -20,7 +20,7 @@ const verifyToken = async (req, res, next) => {
       throw new UnauthorizedError();
     }
 
-    req.userId = user.id;
+    req.user_id = user.id;
     return next();
   } catch (err) {
     return next(err);
