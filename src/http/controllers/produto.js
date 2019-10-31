@@ -4,6 +4,7 @@ const produtoModel = require('../../models/produto');
 class ProdutoController {
   async list(req, res, next) {
     try {
+      //Alteração
       const produtos = await produtoModel.find();
       res.json(produtos);
       return next();
