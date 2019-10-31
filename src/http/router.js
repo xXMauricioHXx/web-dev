@@ -13,10 +13,9 @@ router.get('/produtos/:id', produtoController.listById);
 router.post('/usuarios', usuarioController.createUser);
 router.get('/usuarios/:id', verifyToken, usuarioController.findUserById);
 
+router.get('/favoritos', usuarioController.listFavorites);
+
 router.post('/login', usuarioController.auth);
 
-router.use('*', (req, res, next) => {
-  next(new NotFoundError());
-});
 
 module.exports = router;
