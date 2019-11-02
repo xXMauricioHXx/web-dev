@@ -1,7 +1,7 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { ResourceNotFoundError, UnauthorizedError } = require('../../errors');
-const usuarioModel = require('../../models/usuario');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { ResourceNotFoundError, UnauthorizedError } = require("../../errors");
+const usuarioModel = require("../../models/usuario");
 
 class UsuarioController {
   async listFavorites(req, res, next) {
@@ -13,7 +13,6 @@ class UsuarioController {
       if (!user) {
         throw new ResourceNotFoundError();
       }
-
       const favorites = user.favoriteProducts;
       res.json(favorites);
       return next();
