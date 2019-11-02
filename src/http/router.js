@@ -7,7 +7,7 @@ const { verifyToken } = require("./middlewares/auth");
 const produtoController = new ProdutoController();
 const usuarioController = new UsuarioController();
 
-router.get("/produtos", produtoController.list);
+router.get("/produtos", produtoController.listByNameOrCategory);
 router.get("/produtos/:id", produtoController.listById);
 
 router.post("/usuarios", usuarioController.createUser);

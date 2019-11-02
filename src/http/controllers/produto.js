@@ -12,6 +12,23 @@ class ProdutoController {
     }
   }
 
+  async listByIdOrCategory(req, res, next) {
+    try {
+      const nameOrCategory = req.query.q;
+
+      const products = await produtoModel.find({
+        $or: [
+          { name: { $regex: nameOrCategory, $options: "i" } },
+          { category: { $regex: nameOrCategory, $options: "i" } }
+        ]
+      });
+      res.json(products);
+      return next();
+    } catch (err) {
+      return next(err);
+    }
+  }
+
   async listById(req, res, next) {
     try {
       const { id } = req.params;
