@@ -1,11 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
-const { NotFoundError } = require('./errors');
-const router = require('./http/router');
-const logger = require('./logger');
-const errorHandle = require('./http/middlewares/errorHandle');
+const router = require("./http/router");
+const logger = require("./logger");
+const errorHandle = require("./http/middlewares/errorHandle");
 
 class Application {
   constructor(config) {
@@ -16,7 +16,7 @@ class Application {
     mongoose.connect(this.config.mongoUrl, {
       useCreateIndex: true,
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
     return mongoose.connection;
   }
@@ -24,7 +24,8 @@ class Application {
   start() {
     const db = this.connectDB();
 
-    db.on('connected', () => {
+    db.on("connected", () => {
+      app.use(cors());
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(bodyParser.json());
 
@@ -36,7 +37,7 @@ class Application {
       });
     });
 
-    db.on('error', err => {
+    db.on("error", err => {
       throw new Error(`Fail to connect mongodb: ${err.message}`);
     });
   }
