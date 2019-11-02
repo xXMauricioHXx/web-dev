@@ -12,7 +12,7 @@ class ProdutoController {
     }
   }
 
-  async listByIdOrCategory(req, res, next) {
+  async listByNameOrCategory(req, res, next) {
     try {
       const nameOrCategory = req.query.q;
 
