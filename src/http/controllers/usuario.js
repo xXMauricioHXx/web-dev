@@ -13,6 +13,7 @@ class UsuarioController {
       if (!user) {
         throw new ResourceNotFoundError();
       }
+
       const favorites = user.favoriteProducts;
       res.json(favorites);
       return next();
