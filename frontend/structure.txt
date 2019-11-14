@@ -1,0 +1,31 @@
+product
+
+{
+  image: string,
+  name: string, 
+  price: number,
+  priceWithShipping: number,
+  shippingPrice: number,
+  oldPrice: number,
+  foundIn: number,
+  shortDescription: string,
+  longDescription: string,
+  brand: string,
+  brandImage: string,
+  brandLink: string,
+  effects?: string[],
+  installments: number,
+  installmentsPrice: number,
+  category: string,
+}
+
+
+user
+{
+  name: string,
+  email: string,
+  password: string,
+  favorites: string[],
+  cep: string   
+  
+}

@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "prettier.arrowParens": "avoid",
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "es5",
+    "editor.tabSize": 2,
+    "prettier.jsxBracketSameLine": true,
+    "prettier.jsxSingleQuote": true
+  }
+}

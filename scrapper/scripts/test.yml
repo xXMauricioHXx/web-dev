@@ -1,0 +1,12 @@
+test:
+  stage: test
+  image: payly/node-gitlab-ci:latest
+  script:
+    - npm install
+    - npm run lint
+    - npm run test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  only:
+    - master
+    - develop
+    - merge_requests
