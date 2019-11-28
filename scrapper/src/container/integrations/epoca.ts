@@ -1,9 +1,8 @@
-import axios, { AxiosResponse } from "axios";
-import cheerio from "cheerio";
-import { HttpIntegration } from "./http";
-import { ProductResponse } from "./product";
-import { logger } from "../../logger";
-import { ProductBrands } from "../../enums";
+import axios, { AxiosResponse } from 'axios';
+import cheerio from 'cheerio';
+import { HttpIntegration } from './http';
+import { ProductResponse } from './product';
+import { logger } from '../../logger';
 
 export interface EpocaIntegrationConfig {
   baseURL: string;
@@ -26,19 +25,13 @@ export class EpocaIntegration extends HttpIntegration {
   protected readonly epocaFreteURL: string;
   constructor(config: EpocaIntegrationConfig) {
     super({
-      baseURL: config.baseURL
+      baseURL: config.baseURL,
     });
     this.epocaFreteURL = config.freteURL;
   }
 
   protected formatPriceToInt(price: string): number {
-    return parseInt(price.replace("R$", "").replace(",", ""), 10) / 100;
-  }
-  protected formatCurrencyBRL(value: number) {
-    return value.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    });
+    return parseInt(price.replace('R$', '').replace(',', ''), 10) / 100;
   }
 
   protected async formatResponse(
@@ -48,7 +41,6 @@ export class EpocaIntegration extends HttpIntegration {
     const products: GetProductsResponse[] = response.data.placements[0].docs;
     return await Promise.all(
       products.map(async (product: GetProductsResponse) => {
-        const obj = {};
         try {
           const sku = JSON.parse(product.skuJson);
           const salePriceCents = product.salePriceCents / 100;
@@ -61,41 +53,35 @@ export class EpocaIntegration extends HttpIntegration {
             try {
               shippingPrice = await this.getPriceShipping(itemId, cep);
             } catch (err) {
-              shippingPrice = "Não foi possível calcular frete nesse CEP";
+              shippingPrice = 'Não foi possível calcular frete nesse CEP';
               logger.info(err.response);
             }
 
             if (
-              shippingPrice !== "Não foi possível calcular frete nesse CEP" &&
-              shippingPrice !== "Frete Grátis"
+              shippingPrice !== 'Não foi possível calcular frete nesse CEP' &&
+              shippingPrice !== 'Frete Grátis'
             ) {
               priceWithShipping =
                 this.formatPriceToInt(shippingPrice) + salePriceCents;
             }
           }
           const installments = product.Installment
-            ? product.Installment.replace(":", ",")
-            : "";
+            ? product.Installment.replace(':', ',')
+            : '';
 
           return {
             itemId,
+            oldPrice,
+            priceWithShipping,
+            shippingPrice,
             name: product.name,
-            price: this.formatCurrencyBRL(salePriceCents),
-            oldPrice: this.formatCurrencyBRL(oldPrice),
+            price: salePriceCents,
             description: product.description,
             installments: this.getIntallments(installments),
             installmentsPrice: this.getInstallmentsPrice(installments),
-            image: product.imageId,
-            brand: product.brand.replace(/[^\w\s]/gi, "").toLocaleLowerCase(),
-            siteImage: "https://staticz.com.br/img/logos/epoca-cosmeticos.png",
-            siteLink: product.linkId,
-            category: "",
-            shippingPrice,
-            priceWithShipping: priceWithShipping
-              ? this.formatCurrencyBRL(priceWithShipping)
-              : undefined,
-            brandName: ProductBrands.EPOCA,
-            complete: true
+            imageUrl: product.imageId,
+            link: product.linkId,
+            brand: product.brand,
           };
         } catch (err) {
           logger.info(`Não foi possivel pegar `);
@@ -113,9 +99,11 @@ export class EpocaIntegration extends HttpIntegration {
 
   async getProductsWithShippingPrice(
     productName: string,
-    cep: string
+    cep: string,
+    start: number,
+    end: number
   ): Promise<ProductResponse[]> {
-    const uri = `/?lang=pt&query=${productName}&userId=&placement=search_page.find&start=0&rows=24`;
+    const uri = `/?lang=pt&query=${productName}&userId=&placement=search_page.find&start=${start}&rows=${end}`;
     const response = await this.instance.get<GetProductsResponse>(uri);
     return this.formatResponse(response, cep);
   }
@@ -126,24 +114,83 @@ export class EpocaIntegration extends HttpIntegration {
     );
 
     const $ = cheerio.load(response.data);
-    const shippingText = $("tbody tr td").text();
+    const shippingText = $('tbody tr td').text();
     const value = shippingText.match(/R\$\d.*,\d.|Frete Grátis/gm);
-    return value ? value[0] : "Não foi possível calcular frete nesse CEP";
+    return value ? value[0] : 'Não foi possível calcular frete nesse CEP';
   }
 
-  getIntallments(installments?: string): number | undefined {
+  async checkPrice(itemId: string) {
+    const response = await axios.get(
+      `https://middle.epocacosmeticos.net.br/search-sku.php?idSku=${itemId}`
+    );
+
+    const data = response.data[0];
+    if (!data) {
+      logger.info(`No data found to product with id ${itemId}`);
+      return {
+        effects: undefined,
+        price: undefined,
+      };
+    }
+    const items = data.items;
+    const effects = data.Efeito;
+    if (!effects || !effects.length) {
+      logger.info(`No effects founded to item id ${itemId}`);
+    }
+    let minorPrice = 0;
+    if (items && items.length) {
+      items.forEach((item: any) => {
+        const price = item.sellers[0].commertialOffer.Price;
+
+        if (minorPrice === 0 || price < minorPrice) {
+          minorPrice = price;
+        }
+      });
+    } else {
+      logger.info(`No items founded to item id ${itemId}`);
+    }
+
+    return {
+      effects,
+      price: minorPrice,
+    };
+  }
+
+  async checkPriceByLink(link: string) {
+    const response = await axios.get(link);
+    const $ = cheerio.load(response.data);
+    const price = $('.skuBestPrice').text();
+    const effects = $('.value-field.Efeito').text();
+    const oldPrice = $('.skuListPrice').text();
+    const sku = $('.sku-ean-code').text();
+    return {
+      sku,
+      price: this.clearMoneyFormat(price),
+      effects: effects ? effects.split(',') : undefined,
+      oldPrice: this.clearMoneyFormat(oldPrice),
+    };
+  }
+
+  protected getIntallments(installments?: string): number | undefined {
     if (installments) {
       const intallmentsNumber = installments.match(/.*[0-9]x/gm);
-      return intallmentsNumber ? parseInt(intallmentsNumber[0]) : undefined;
+      return intallmentsNumber ? parseInt(intallmentsNumber[0], 10) : undefined;
     }
     return undefined;
   }
 
-  getInstallmentsPrice(installments?: string): string | undefined {
+  protected getInstallmentsPrice(installments?: string): number | undefined {
     if (installments) {
       const intallmentsPrice = installments.match(/R\$.*/gm);
-      return intallmentsPrice ? intallmentsPrice[0] : undefined;
+      return intallmentsPrice
+        ? this.clearMoneyFormat(intallmentsPrice[0])
+        : undefined;
     }
     return undefined;
+  }
+
+  protected clearMoneyFormat(data: string): number {
+    console.log(data);
+    return parseFloat(data.replace('R$', '').replace(',', '.'));
   }
 }

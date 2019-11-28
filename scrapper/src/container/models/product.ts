@@ -1,29 +1,21 @@
-import { MongoModel } from "./mongo";
+import { MySQLModel } from './mysql';
+import { Transaction } from 'knex';
 
 export interface Product {
-  _id: string;
+  id: string;
   name: string;
-  companies: [
-    {
-      itemId: string,
-      price: string;
-      oldPrice: string;
-      description: string;
-      installments?: number;
-      installmentsPrice?: string;
-      brand: string,
-      image: string;
-      siteImage: string;
-      siteLink: string;
-      shippingPrice?: string;
-      priceWithShipping?: string;
-    }
-  ]
+  categoryId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export class ProductModel extends MongoModel<Product> {
-  protected getCollectionName(): string {
+export class ProductModel extends MySQLModel<Product> {
+  getTableName(): string {
     return 'product';
   }
 
+  async getByName(name: string, trx?: Transaction): Promise<boolean> {
+    const result = await this.transactionable(trx).where('name', name);
+    return result.length > 0;
+  }
 }

@@ -12,10 +12,8 @@ export class EpocaService {
     this.productModel = context.productModel;
   }
 
-  async getProducts(productName: string, cep: string): Promise<ProductResponse[]> {    
-    return await this.epocaIntegration.getProductsWithShippingPrice(
-      productName,
-      cep
-    );        
+  async findByName(name: string) {
+    const exist = await this.productModel.getByName(name);
+    console.log(exist);
   }
 }

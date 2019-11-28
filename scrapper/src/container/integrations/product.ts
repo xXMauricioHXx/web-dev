@@ -1,20 +1,14 @@
-import { ProductBrands } from "../../enums";
-
 export interface ProductResponse {
   itemId: string;
-  image: string;
+  imageUrl: string;
   name: string;
-  price: string;
-  oldPrice: string;
+  price: number;
+  oldPrice: number;
   description: string;
   installments?: number;
-  installmentsPrice?: string;
-  brand: string,  
-  siteImage: string;
-  siteLink: string;
-  category: string;
+  installmentsPrice?: number;
+  link: string;
   shippingPrice?: string;
-  priceWithShipping?: string;
-  complete?: boolean;
-  brandName: ProductBrands;
+  priceWithShipping?: number;
+  brand: string;
 }

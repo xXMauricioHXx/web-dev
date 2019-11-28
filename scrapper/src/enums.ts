@@ -1,13 +1,9 @@
-export enum UserSources {
-  JsonPlaceholder = "JSON_PLACEHOLDER"
-}
-
 export enum ProductBrands {
-  BELEZA = "beleza",
-  EPOCA = "epoca"
+  Beleza = 'beleza',
+  Epoca = 'Época Cosméticos',
 }
 
 export enum ProducstType {
-  BATOM = "batom",
-  PO = "pó"
+  BATOM = 'batom',
+  PO = 'pó',
 }

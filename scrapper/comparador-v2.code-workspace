@@ -10,11 +10,10 @@
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 150,
     "editor.rulers": [80, 100],
-    "prettier.stylelintIntegration": true,
     "prettier.trailingComma": "es5",
-    "prettier.tslintIntegration": true,
+    "prettier.configPath": ".",
     "prettier.bracketSpacing": true,
-    "prettier.arrowParens": "always",
+    "prettier.arrowParens": "avoid",
     "prettier.singleQuote": true,
     "editor.formatOnSave": true,
     "[javascript]": {
@@ -23,7 +22,6 @@
     "[typescript]": {
       "editor.formatOnSave": true
     },
-    "javascript.preferences.quoteStyle": "single",
-    "prettier.eslintIntegration": true
+    "javascript.preferences.quoteStyle": "single"
   }
 }
